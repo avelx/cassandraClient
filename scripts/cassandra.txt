@@ -1,0 +1,24 @@
+== Create keyspace:
+
+CREATE KEYSPACE Users WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 1  };
+
+
+== Create students table
+USE Users;
+
+CREATE TABLE students(
+                    id int PRIMARY KEY,
+                    firsName text,
+                    lastName text,
+                    dateOfBirth date,
+                    regCode text
+);
+
+== Insert data
+
+USE Users;
+
+INSERT INTO users.students (id, dateofbirth, firsname, lastname, regcode)  VALUES(2, '1982-02-02', 'Fox', 'LastName', 'regCode-0021');
+INSERT INTO users.students (id, dateofbirth, firsname, lastname, regcode)  VALUES(2, '1982-02-02', 'Fox', 'LastName', 'regCode-0021');
+INSERT INTO users.students (id, dateofbirth, firsname, lastname, regcode)  VALUES(2, '1982-02-02', 'Fox', 'LastName', 'regCode-0021');
+INSERT INTO users.students (id, dateofbirth, firsname, lastname, regcode)  VALUES(2, '1982-02-02', 'Fox', 'LastName', 'regCode-0021');

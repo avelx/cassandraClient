@@ -6,6 +6,12 @@ import (
 	"log"
 )
 
+type Student struct {
+	id       string
+	dob      string
+	fistName string
+}
+
 // Ref: https://docs.aws.amazon.com/keyspaces/latest/devguide/using_go_driver.html
 func main() {
 
@@ -33,10 +39,11 @@ func main() {
 	defer session.Close()
 
 	// run a sample query from the system keyspace
-	var text string
-	iter := session.Query("SELECT keyspace_name FROM system_schema.tables;").Iter()
-	for iter.Scan(&text) {
-		fmt.Println("keyspace_name:", text)
+	var std = Student{}
+
+	iter := session.Query("SELECT id, dateofbirth, firsname FROM users.students;").Iter()
+	for iter.Scan(&std.id, &std.dob, &std.fistName) {
+		fmt.Println("Student record:", std)
 	}
 	if err := iter.Close(); err != nil {
 		log.Fatal(err)
