@@ -11,16 +11,16 @@ func main() {
 
 	// add the Amazon Keyspaces service endpoint
 	cluster := gocql.NewCluster("localhost")
-	cluster.Port = 9142
+	cluster.Port = 9042
 	// add your service specific credentials
 	cluster.Authenticator = gocql.PasswordAuthenticator{
-		Username: "ServiceUserName",
-		Password: "ServicePassword"}
+		Username: "",
+		Password: ""}
 	// provide the path to the sf-class2-root.crt
 	//cluster.SslOpts = &gocql.SslOptions{
 	//	CaPath:                 "path_to_file/sf-class2-root.crt",
 	//	EnableHostVerification: false,
-	}
+	//}
 
 	// Override default Consistency to LocalQuorum
 	cluster.Consistency = gocql.LocalQuorum
