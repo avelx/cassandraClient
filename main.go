@@ -47,9 +47,14 @@ func main() {
 	// Insert a batch of records into students' table
 	//insertBatch(session)
 
-	// run a sample query from the system keyspace
-	var std = Student{}
+	// Get all records
+	getAllRecords(session)
 
+	session.Close()
+}
+
+func getAllRecords(session *gocql.Session) {
+	var std = Student{}
 	iter := session.Query("SELECT id, dateofbirth, firstname, lastName FROM users.students;").Iter()
 	for iter.Scan(&std.id, &std.dob, &std.fistName, &std.lastName) {
 		fmt.Println("REC::", std)
@@ -57,7 +62,6 @@ func main() {
 	if err := iter.Close(); err != nil {
 		log.Fatal(err)
 	}
-	session.Close()
 }
 
 func insertBatch(session *gocql.Session) {
