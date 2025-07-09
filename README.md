@@ -1,5 +1,7 @@
 Simple cassandra client
 
+== Cassandra ==
+
 Go cassandra connector:
 https://pkg.go.dev/github.com/gocql/gocql
 
