@@ -8,7 +8,7 @@ USE Users;
 
 CREATE TABLE students(
                     id int PRIMARY KEY,
-                    firsName text,
+                    firstName text,
                     lastName text,
                     dateOfBirth date,
                     regCode text
