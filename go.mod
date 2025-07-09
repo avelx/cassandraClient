@@ -3,6 +3,7 @@ module cassandraClient
 go 1.24
 
 require (
+	github.com/duktig-solutions/go-random-date-generator v0.0.0-20220823170630-1c67478b7653 // indirect
 	github.com/gocql/gocql v1.7.0 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/google/uuid v1.6.0 // indirect

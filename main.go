@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/duktig-solutions/go-random-date-generator"
 	"github.com/gocql/gocql"
 	"github.com/google/uuid"
+	"math/rand"
 	"strconv"
 	"sync"
 )
@@ -41,12 +43,13 @@ func main() {
 	}
 	defer session.Close()
 
+	// Insert batch of records into students' table
 	insertBatch(session)
 
 	// run a sample query from the system keyspace
 	//var std = Student{}
 	//
-	//iter := session.Query("SELECT id, dateofbirth, firsname FROM users.students;").Iter()
+	//iter := session.Query("SELECT id, dateofbirth, firstname FROM users.students;").Iter()
 	//for iter.Scan(&std.id, &std.dob, &std.fistName) {
 	//	fmt.Println("Student record:", std)
 	//}
@@ -62,11 +65,7 @@ func insertBatch(session *gocql.Session) {
 	var wg sync.WaitGroup
 
 	for id := 0; id < maxNumberOfStudents; id++ {
-		var std = Student{}
-		std.id = strconv.Itoa(id)
-		std.dob = "1970-01-01"
-		std.fistName = "Alex"
-		std.lastName = "Fox"
+		std := generateStudentRecord(id)
 
 		go func() {
 			regCode := uuid.New().String()
@@ -77,7 +76,19 @@ func insertBatch(session *gocql.Session) {
 
 	for i := 0; i < maxNumberOfStudents; i++ {
 		res := <-results // receive from c
-		fmt.Println("Operation results", res)
+		fmt.Println("INS::OP::RES=>", res)
 	}
 	wg.Wait()
+}
+
+func generateStudentRecord(id int) Student {
+	fistNames := []string{"John", "Doe", "Jane", "Doe", "Alex", "Jack", "Kevin", "Fox", "Paul"}
+	lastNames := []string{"Mulder", "Morse", "Conway", "Arnold", "Haley", "Marsh", "Gomez"}
+	randomDate, _ := randomDataTime.GenerateDate("1970-08-01", "2005-08-01")
+	var std = Student{}
+	std.id = strconv.Itoa(id)
+	std.dob = randomDate
+	std.fistName = fistNames[rand.Intn(len(fistNames))]
+	std.lastName = lastNames[rand.Intn(len(lastNames))]
+	return std
 }
