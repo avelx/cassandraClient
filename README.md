@@ -13,8 +13,13 @@ https://cassandra.apache.org/doc/4.1/cassandra/cql/types.html
 
 == Kafka ==
 
-Refs: https://github.com/segmentio/kafka-go
+Docker refs: https://hub.docker.com/r/apache/kafka
+Go refs: https://github.com/segmentio/kafka-go
 
 * Reader 
 * Writer 
 * Topic creation logic
+
+== Streaming ==
+
+* Ref => https://github.com/reugn/go-streams/blob/v0.13.0/examples/kafka/main.go
