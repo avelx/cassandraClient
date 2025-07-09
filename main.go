@@ -21,7 +21,7 @@ type Student struct {
 // Ref: https://docs.aws.amazon.com/keyspaces/latest/devguide/using_go_driver.html
 func main() {
 
-	// add the Amazon Keyspaces service endpoint
+	// 1::SET UP
 	cluster := gocql.NewCluster("localhost")
 	cluster.Port = 9042
 	// add your service specific credentials
@@ -44,6 +44,8 @@ func main() {
 	}
 	defer session.Close()
 
+	// 2::INVOKE OPERATIONS
+
 	// Insert a batch of records into students' table
 	//insertBatch(session)
 
@@ -56,8 +58,10 @@ func main() {
 func getAllRecords(session *gocql.Session) {
 	var std = Student{}
 	iter := session.Query("SELECT id, dateofbirth, firstname, lastName FROM users.students;").Iter()
+	recNumber := 0
 	for iter.Scan(&std.id, &std.dob, &std.fistName, &std.lastName) {
-		fmt.Println("REC::", std)
+		recNumber += 1
+		fmt.Printf("REC::%v == %s\n", recNumber, std)
 	}
 	if err := iter.Close(); err != nil {
 		log.Fatal(err)
@@ -86,7 +90,7 @@ func insertBatch(session *gocql.Session) {
 	wg.Wait()
 }
 
-func generateStudentRecord(id int) Student {
+func generateStudentRecord(id int) *Student {
 	fistNames := []string{"John", "Doe", "Jane", "Doe", "Alex", "Jack", "Kevin", "Fox", "Paul"}
 	lastNames := []string{"Mulder", "Morse", "Conway", "Arnold", "Haley", "Marsh", "Gomez"}
 	randomDate, _ := randomDataTime.GenerateDate("1970-08-01", "2005-08-01")
@@ -95,5 +99,5 @@ func generateStudentRecord(id int) Student {
 	std.dob = randomDate
 	std.fistName = fistNames[rand.Intn(len(fistNames))]
 	std.lastName = lastNames[rand.Intn(len(lastNames))]
-	return std
+	return &std
 }
