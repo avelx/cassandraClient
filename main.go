@@ -5,6 +5,7 @@ import (
 	"github.com/duktig-solutions/go-random-date-generator"
 	"github.com/gocql/gocql"
 	"github.com/google/uuid"
+	"log"
 	"math/rand"
 	"strconv"
 	"sync"
@@ -43,19 +44,19 @@ func main() {
 	}
 	defer session.Close()
 
-	// Insert batch of records into students' table
-	insertBatch(session)
+	// Insert a batch of records into students' table
+	//insertBatch(session)
 
 	// run a sample query from the system keyspace
-	//var std = Student{}
-	//
-	//iter := session.Query("SELECT id, dateofbirth, firstname FROM users.students;").Iter()
-	//for iter.Scan(&std.id, &std.dob, &std.fistName) {
-	//	fmt.Println("Student record:", std)
-	//}
-	//if err := iter.Close(); err != nil {
-	//	log.Fatal(err)
-	//}
+	var std = Student{}
+
+	iter := session.Query("SELECT id, dateofbirth, firstname, lastName FROM users.students;").Iter()
+	for iter.Scan(&std.id, &std.dob, &std.fistName, &std.lastName) {
+		fmt.Println("REC::", std)
+	}
+	if err := iter.Close(); err != nil {
+		log.Fatal(err)
+	}
 	session.Close()
 }
 
