@@ -10,3 +10,11 @@ https://www.tutorialspoint.com/cassandra/cassandra_create_data.htm
 
 Cassandra data types:
 https://cassandra.apache.org/doc/4.1/cassandra/cql/types.html
+
+== Kafka ==
+
+Refs: https://github.com/segmentio/kafka-go
+
+* Reader 
+* Writer 
+* Topic creation logic
