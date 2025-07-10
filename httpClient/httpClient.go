@@ -2,11 +2,13 @@ package httpClient
 
 import (
 	"bufio"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
 )
 
+// Run Refs: https://gobyexample.com/http-client
 func Run() {
 
 	jsonHandler := slog.NewJSONHandler(os.Stdout, nil)
@@ -14,9 +16,8 @@ func Run() {
 	localLog.Info("Starting ...")
 
 	completionState := make(chan interface{})
-	//var wg sync.WaitGroup
 
-	const maxNumberOfRequests = 100000
+	const maxNumberOfRequests = 50000 //00
 	for requestId := 0; requestId < maxNumberOfRequests; requestId++ {
 		go callAsGet(localLog, completionState, requestId)
 	}
@@ -25,7 +26,6 @@ func Run() {
 		<-completionState // read each request completion state
 	}
 	localLog.Info("Level::3::Request processing is complete")
-	//wg.Wait()
 }
 
 func callAsGet(localLog *slog.Logger, state chan interface{}, requestId int) {
@@ -43,10 +43,10 @@ func callAsGet(localLog *slog.Logger, state chan interface{}, requestId int) {
 	localLog.Info("Status", resp.StatusCode)
 
 	scanner := bufio.NewScanner(resp.Body)
-	//for i := 0; scanner.Scan() && i < 5; i++ {
-	//	fmt.Println(scanner.Text())
-	//	localLog.Info("Read response", scanner.Text())
-	//}
+	for i := 0; scanner.Scan() && i < 5; i++ {
+		fmt.Println(scanner.Text())
+		localLog.Info("Read response", scanner.Text())
+	}
 
 	if err := scanner.Err(); err != nil {
 		localLog.Error("Level::2", err)
