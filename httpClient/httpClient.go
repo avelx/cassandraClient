@@ -4,6 +4,9 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sethvargo/go-retry"
 	"log/slog"
 	"net/http"
@@ -11,22 +14,44 @@ import (
 	"time"
 )
 
+var (
+	opsProcessed = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "myapp_processed_ops_total",
+		Help: "The total number of processed events",
+	})
+)
+
+func recordMetrics() {
+	go func() {
+		for {
+			opsProcessed.Inc()
+			time.Sleep(5 * time.Second)
+		}
+	}()
+}
+
 // Run Refs: https://gobyexample.com/http-client
 func Run() {
+
+	// Set up Prometheus metrics endpoint
+	recordMetrics()
+	go startPushMetrics()
 
 	// Set up log
 	jsonHandler := slog.NewJSONHandler(os.Stdout, nil)
 	localLog := slog.New(jsonHandler)
 	localLog.Info("Starting ...")
 
-	completionState := make(chan interface{}, 10000)
-
+	// Set up retry logic
 	ctx := context.Background()
 	b := retry.NewFibonacci(3 * time.Second)
 
+	// Create a buffered channel to control completion
+	completionState := make(chan interface{}, 1000)
 	const maxNumberOfRequests = 10000 //00
+
 	for requestId := 0; requestId < maxNumberOfRequests; requestId++ {
-		go retry.Do(ctx, retry.WithMaxRetries(5, b), func(ctx context.Context) error {
+		go retry.Do(ctx, retry.WithMaxRetries(2, b), func(ctx context.Context) error {
 			err := callAsGet(localLog, completionState, requestId)
 			if err != nil {
 				localLog.Error("Level::Retry", err)
@@ -39,6 +64,11 @@ func Run() {
 		<-completionState // read each request completion state
 	}
 	localLog.Info("Level::3::Request processing is complete")
+}
+
+func startPushMetrics() {
+	http.Handle("/metrics", promhttp.Handler())
+	http.ListenAndServe(":9090", nil)
 }
 
 func callAsGet(localLog *slog.Logger, state chan interface{}, requestId int) error {
