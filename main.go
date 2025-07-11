@@ -1,22 +1,26 @@
 package main
 
 import (
-	"cassandraClient/httpClient"
 	"fmt"
 	"github.com/gookit/config/v2"
 	"gopkg.in/yaml.v2"
-	"os"
-	"path/filepath"
 )
+import _ "embed"
+
+//go:embed config/config.yml
+var configFile string
 
 // Ref: https://docs.aws.amazon.com/keyspaces/latest/devguide/using_go_driver.html
 func main() {
 
-	fullUrl := getTargetUrl()
+	fullUrl, err := readConfig()
+	if err != nil {
+		panic(err.Error())
+	}
 	fmt.Println(fullUrl)
 
 	// 4: Http client work
-	httpClient.Run(fullUrl)
+	//httpClient.Run(fullUrl)
 
 	// 3: Bytes ...
 	//Play with the bytes
@@ -35,17 +39,17 @@ func main() {
 	//cassandra.Runner()
 }
 
-func getTargetUrl() string {
-	err := getConfig()
+func readConfig() (string, error) {
+	err := converToYaml()
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	targetHostname := config.String("target_hostname")
 	pageName := config.String("page_name")
-	return targetHostname + "/" + pageName
+	return targetHostname + "/" + pageName, err
 }
 
-func getConfig() error {
+func converToYaml() error {
 	var Decoder config.Decoder = yaml.Unmarshal
 	var Encoder config.Encoder = yaml.Marshal
 	var Driver = config.NewDriver(config.Yaml, Decoder, Encoder).WithAliases(config.Yml)
@@ -53,13 +57,7 @@ func getConfig() error {
 	config.WithOptions(config.ParseEnv)
 	config.AddDriver(Driver)
 
-	ex, err := os.Executable()
-	if err != nil {
-		panic(err)
-	}
-	ex, _ = os.Executable()
-	currentFolder := filepath.Dir(ex)
-
-	err = config.LoadFiles(currentFolder + "/config/config.yml")
+	// convert embeded file into Yaml
+	err := config.LoadSources(config.Yaml, []byte(configFile))
 	return err
 }
