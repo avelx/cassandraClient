@@ -66,6 +66,33 @@ func RunNonBlockingSetOfCalls(fullUrl string) {
 	localLog.Info("Level::3::Request processing is complete")
 }
 
+func RunNonBlockingV2(fullUrl string) {
+
+	// Set up Prometheus metrics endpoint
+	recordMetrics()
+	go startPushMetrics()
+
+	// Set up log
+	jsonHandler := slog.NewJSONHandler(os.Stdout, nil)
+	localLog := slog.New(jsonHandler)
+	localLog.Info("Starting ...")
+
+	// Set up retry logic
+
+	// Create a buffered channel to control completion
+	completionState := make(chan interface{}, 300)
+	const maxNumberOfRequests = 10000 //00
+
+	for requestId := 0; requestId < maxNumberOfRequests; requestId++ {
+		go callAsGet(localLog, completionState, requestId, fullUrl)
+	}
+
+	for i := 0; i < maxNumberOfRequests; i++ {
+		<-completionState // read each request completion state
+	}
+	localLog.Info("Level::3::Request processing is complete")
+}
+
 func startPushMetrics() {
 	http.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe(":9090", nil)

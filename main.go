@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cassandraClient/httpClient"
 	"fmt"
 	"github.com/gookit/config/v2"
 	"gopkg.in/yaml.v2"
@@ -22,7 +23,7 @@ func main() {
 
 	//////////////////////////////////////////////////////////////////
 	// 4: Http client work
-	//httpClient.RunNonBlockingSetOfCalls(fullUrl)
+	httpClient.RunNonBlockingV2(fullUrl)
 	//////////////////////////////////////////////////////////////////
 
 	// 3: Bytes ...
