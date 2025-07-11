@@ -30,8 +30,8 @@ func recordMetrics() {
 	}()
 }
 
-// Run Refs: https://gobyexample.com/http-client
-func Run(fullUrl string) {
+// runNonBlockingSetOfCalls Refs: https://gobyexample.com/http-client
+func runNonBlockingSetOfCalls(fullUrl string) {
 
 	// Set up Prometheus metrics endpoint
 	recordMetrics()
