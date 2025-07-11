@@ -31,7 +31,7 @@ func recordMetrics() {
 }
 
 // Run Refs: https://gobyexample.com/http-client
-func Run() {
+func Run(fullUrl string) {
 
 	// Set up Prometheus metrics endpoint
 	recordMetrics()
@@ -52,7 +52,7 @@ func Run() {
 
 	for requestId := 0; requestId < maxNumberOfRequests; requestId++ {
 		go retry.Do(ctx, retry.WithMaxRetries(2, b), func(ctx context.Context) error {
-			err := callAsGet(localLog, completionState, requestId)
+			err := callAsGet(localLog, completionState, requestId, fullUrl)
 			if err != nil {
 				localLog.Error("Level::Retry", err)
 			}
@@ -71,11 +71,11 @@ func startPushMetrics() {
 	http.ListenAndServe(":9090", nil)
 }
 
-func callAsGet(localLog *slog.Logger, state chan interface{}, requestId int) error {
+func callAsGet(localLog *slog.Logger, state chan interface{}, requestId int, url string) error {
 	//defer wg.Done() // here we say that we are done
 
 	//localLog.Info("RequestId", requestId)
-	resp, err := http.Get("http://localhost:9000/users")
+	resp, err := http.Get(url)
 	if err != nil {
 		localLog.Error("Level::1", err)
 		return err
