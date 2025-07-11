@@ -95,7 +95,7 @@ func RunNonBlockingV2(fullUrl string, maxNumberOfRequests int) {
 
 func startPushMetrics() {
 	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(":9090", nil)
+	http.ListenAndServe(":2112", nil)
 }
 
 func callAsGet(localLog *slog.Logger, state chan interface{}, requestId int, url string) error {
