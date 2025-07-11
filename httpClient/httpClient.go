@@ -80,7 +80,7 @@ func RunNonBlockingV2(fullUrl string, maxNumberOfRequests int) {
 	// Set up retry logic
 
 	// Create a buffered channel to control completion
-	completionState := make(chan interface{}, 300)
+	completionState := make(chan interface{}, 0)
 	//const maxNumberOfRequests = 100000 //0
 
 	for requestId := 0; requestId < maxNumberOfRequests; requestId++ {
