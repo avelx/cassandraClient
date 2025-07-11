@@ -13,7 +13,7 @@ var configFile string
 // Ref: https://docs.aws.amazon.com/keyspaces/latest/devguide/using_go_driver.html
 func main() {
 
-	fullUrl, err := readConfig()
+	fullUrl, err := readYamlConfig()
 	if err != nil {
 		panic(err.Error())
 	}
@@ -39,8 +39,8 @@ func main() {
 	//cassandra.Runner()
 }
 
-func readConfig() (string, error) {
-	err := converToYaml()
+func readYamlConfig() (string, error) {
+	err := converseToYaml()
 	if err != nil {
 		return "", err
 	}
@@ -49,7 +49,7 @@ func readConfig() (string, error) {
 	return targetHostname + "/" + pageName, err
 }
 
-func converToYaml() error {
+func converseToYaml() error {
 	var Decoder config.Decoder = yaml.Unmarshal
 	var Encoder config.Encoder = yaml.Marshal
 	var Driver = config.NewDriver(config.Yaml, Decoder, Encoder).WithAliases(config.Yml)
