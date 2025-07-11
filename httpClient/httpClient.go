@@ -66,7 +66,7 @@ func RunNonBlockingSetOfCalls(fullUrl string) {
 	localLog.Info("Level::3::Request processing is complete")
 }
 
-func RunNonBlockingV2(fullUrl string) {
+func RunNonBlockingV2(fullUrl string, maxNumberOfRequests int) {
 
 	// Set up Prometheus metrics endpoint
 	recordMetrics()
@@ -81,7 +81,7 @@ func RunNonBlockingV2(fullUrl string) {
 
 	// Create a buffered channel to control completion
 	completionState := make(chan interface{}, 300)
-	const maxNumberOfRequests = 10000 //00
+	//const maxNumberOfRequests = 100000 //0
 
 	for requestId := 0; requestId < maxNumberOfRequests; requestId++ {
 		go callAsGet(localLog, completionState, requestId, fullUrl)

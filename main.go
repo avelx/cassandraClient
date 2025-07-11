@@ -2,9 +2,9 @@ package main
 
 import (
 	"cassandraClient/httpClient"
-	"fmt"
 	"github.com/gookit/config/v2"
 	"gopkg.in/yaml.v2"
+	"strconv"
 )
 import _ "embed"
 
@@ -15,15 +15,16 @@ var configFile string
 func main() {
 
 	// Step Zero: read config from resources
-	fullUrl, err := readYamlConfig()
+	fullUrl, maxNumberOfRequestsAsInt, err := readYamlConfig()
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Println(fullUrl)
+	//fmt.Println(fullUrl)
+	//fmt.Println(maxNumberOfRequestsAsInt)
 
 	//////////////////////////////////////////////////////////////////
 	// 4: Http client work
-	httpClient.RunNonBlockingV2(fullUrl)
+	httpClient.RunNonBlockingV2(fullUrl, maxNumberOfRequestsAsInt)
 	//////////////////////////////////////////////////////////////////
 
 	// 3: Bytes ...
@@ -43,14 +44,16 @@ func main() {
 	//cassandra.Runner()
 }
 
-func readYamlConfig() (string, error) {
+func readYamlConfig() (string, int, error) {
 	err := converseToYaml()
 	if err != nil {
-		return "", err
+		return "", -1, err
 	}
 	targetHostname := config.String("target_hostname")
 	pageName := config.String("page_name")
-	return targetHostname + "/" + pageName, err
+	maxNumberOfRequests := config.String("maxNumberOfRequests")
+	maxRequestsAsInt, err := strconv.Atoi(maxNumberOfRequests)
+	return targetHostname + "/" + pageName, maxRequestsAsInt, err
 }
 
 func converseToYaml() error {
