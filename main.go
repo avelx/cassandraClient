@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cassandraClient/httpClient"
+	"cassandraClient/file"
 	"github.com/gookit/config/v2"
 	"gopkg.in/yaml.v2"
 	"strconv"
@@ -14,17 +14,21 @@ var configFile string
 // Ref: https://docs.aws.amazon.com/keyspaces/latest/devguide/using_go_driver.html
 func main() {
 
+	// 5: Write file
+	file.ReadFile()
+	//file.WriteFile()
+
 	// Step Zero: read config from resources
-	fullUrl, maxNumberOfRequestsAsInt, err := readYamlConfig()
-	if err != nil {
-		panic(err.Error())
-	}
+	//fullUrl, maxNumberOfRequestsAsInt, err := readYamlConfig()
+	//if err != nil {
+	//	panic(err.Error())
+	//}
 	//fmt.Println(fullUrl)
 	//fmt.Println(maxNumberOfRequestsAsInt)
 
 	//////////////////////////////////////////////////////////////////
 	// 4: Http client work
-	httpClient.RunNonBlockingV2(fullUrl, maxNumberOfRequestsAsInt)
+	//httpClient.RunNonBlockingV2(fullUrl, maxNumberOfRequestsAsInt)
 	//////////////////////////////////////////////////////////////////
 
 	// 3: Bytes ...
