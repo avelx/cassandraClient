@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cassandraClient/file"
+	"cassandraClient/regexpress"
 	"github.com/gookit/config/v2"
 	"gopkg.in/yaml.v2"
 	"strconv"
@@ -14,8 +14,11 @@ var configFile string
 // Ref: https://docs.aws.amazon.com/keyspaces/latest/devguide/using_go_driver.html
 func main() {
 
+	// 6. Regexp
+	regexpress.RunRegExp()
+
 	// 5: Write file
-	file.ReadFile()
+	//file.ReadFile()
 	//file.WriteFile()
 
 	// Step Zero: read config from resources
