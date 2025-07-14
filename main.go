@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cassandraClient/redis"
+	"cassandraClient/posgres"
 	"github.com/gookit/config/v2"
 	"gopkg.in/yaml.v2"
 	"strconv"
@@ -14,8 +14,11 @@ var configFile string
 // Ref: https://docs.aws.amazon.com/keyspaces/latest/devguide/using_go_driver.html
 func main() {
 
+	// 9. PostGres
+	posgres.RunnerPost()
+
 	// 8. Redis
-	redis.RedisRunner()
+	//redis.RedisRunner()
 
 	// 7. Interfaces play
 	//interfaces.RunSeq()
